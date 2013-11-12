@@ -38,6 +38,11 @@ function gotStream(stream) {
   input.connect(analyser);
   // startup the main loop
   update();
+
+  // start playing basic sound
+  oscillator = audioContext.createOscillator();
+  oscillator.connect(audioContext.destination); // Connect to speakers
+  oscillator.start(0); // Start generating sound immediately
 }
 
 function update(){

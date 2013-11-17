@@ -1,7 +1,10 @@
 var audioContext = null;
 var graph;
 var analyser;
+var analyser2;
 var data = new Uint8Array(512);
+var freqs = new Float32Array(64);
+var freqBytes = new Uint8Array(64);
 var rafID;
 
 function init(){
@@ -36,6 +39,10 @@ function gotStream(stream) {
   analyser = audioContext.createAnalyser();
   analyser.fftSize = 1024;
   input.connect(analyser);
+
+  analyser2 = audioContext.createAnalyser();
+  analyser2.fftSize = 128;
+  analyser.connect(analyser2);
   // startup the main loop
   update();
 
@@ -52,6 +59,10 @@ function update(){
   if (zeroCross==0) zeroCross=1;
    
   graph.draw(data, zeroCross);
+
+  var maxValue = findMaxTimeDomainValue(data);
+  document.getElementById('maxValue').innerHTML = '' + maxValue;
+
   rafID = requestAnimFrame( update );
 }
 
@@ -103,4 +114,19 @@ function findFirstPositiveZeroCrossing(buf, buflen) {
     return 0;
 
   return last_zero;
+}
+
+function findMaxTimeDomainValue(data) {
+  var max = 0;
+  var length = data.length;
+  var i=0;
+
+  while (i<length) {
+    if(data[i] > max){
+      max = data[i];
+    }
+    i++;
+  }
+
+  return max;
 }

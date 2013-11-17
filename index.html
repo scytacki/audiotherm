@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Oscilloscope</title>
+    <title>Audio Thermometer</title>
     <style>
       body { margin: 1em;}
       p { margin: 1em 0;}
@@ -19,9 +19,10 @@
       }
     </style>
     <script src="js/graph.js"></script>
-    <script src="js/sound_grapher.js"></script>
+    <script src="js/audiotherm.js"></script>
   </head>
   <body>
-  <p>This demo shows an "oscilloscope control", complete with zero-triggered sweep built in</p>
+  <p>When a thermistor is connected to the headset jack, this demo shows how temperature can be read out</p>
+  <div>Max Value: <span id="maxValue"></span></div>
   </body>
 </html>

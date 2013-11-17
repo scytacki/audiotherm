@@ -11,18 +11,33 @@
         width: 512px;
         height: 256px;
       }
-      canvas {
+      canvas.oscope {
         border:  3px solid gray;
         border-radius: 15px;
         background: teal;
         box-shadow: 7px 10px 5px black;
       }
+      div#graph {
+         display: inline-block;
+         vertical-align: top;
+         left-margin: 0.5em;
+         background-color: #ddf2ff;
+         border-radius: 0.25em;
+         width: 460px;
+         height: 375px; }
     </style>
-    <script src="js/graph.js"></script>
+    <link href="http://lab.concord.org/version/0.5.12/grapher.css" rel="stylesheet" type="text/css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="http://lab.concord.org/version/0.5.12/vendor/d3/d3.js"></script>
+    <script src="http://lab.concord.org/version/0.5.12/lab/lab.grapher.js"></script>
+    <script src="js/oscope_graph.js"></script>
+    <script src="js/temperature_graph.js"></script>
     <script src="js/audiotherm.js"></script>
   </head>
   <body>
   <p>When a thermistor is connected to the headset jack, this demo shows how temperature can be read out</p>
+  <a href="#" id="stop">Stop<a>
   <div>Max Value: <span id="maxValue"></span></div>
+  <div id='graph' class="graph"></div>
   </body>
 </html>

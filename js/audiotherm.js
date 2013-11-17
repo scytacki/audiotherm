@@ -1,15 +1,26 @@
 var audioContext = null;
-var graph;
+var oscopeGraph;
+var temperatureGraph;
 var analyser;
 var data = new Uint8Array(512);
 var freqs = new Float32Array(64);
 var freqBytes = new Uint8Array(64);
 var rafID;
+var stopped = false;
+var frameNumber = 0;
 
 function init(){
-  graph = new Graph();
+
+  graph = new OScopeGraph();
   graph.setup();
+  temperatureGraph = new TemperatureGraph();
+  temperatureGraph.setup();
   setupAudio();
+
+  $('#stop').click(function(){
+    stopped = true;
+    oscillator.stop(0);
+  });
 }
 window.addEventListener("load", init );
 
@@ -49,6 +60,14 @@ function gotStream(stream) {
 }
 
 function update(){
+  // skip the first 10 frames because the microphone appears to take
+  // some time to warm up or something
+  frameNumber++;
+  if(frameNumber < 10){
+    rafID = requestAnimFrame( update );
+    return;
+  }
+
   analyser.getByteTimeDomainData(data);
   
   var zeroCross = findFirstPositiveZeroCrossing(data, 512);
@@ -57,9 +76,14 @@ function update(){
   graph.draw(data, zeroCross);
 
   var maxValue = findMaxTimeDomainValue(data);
-  document.getElementById('maxValue').innerHTML = '' + maxValue;
+  var smoothedMax = holtsMethodSmoothing(maxValue);
 
-  rafID = requestAnimFrame( update );
+  document.getElementById('maxValue').innerHTML = '' + smoothedMax;
+  temperatureGraph.addPoint(smoothedMax);
+
+  if(!stopped){
+    rafID = requestAnimFrame( update );
+  }
 }
 
 // shim layer with setTimeout fallback
@@ -125,4 +149,26 @@ function findMaxTimeDomainValue(data) {
   }
 
   return max;
+}
+
+var previousValue = null;
+var levelSmoothingConstant = 0.1;
+var trendSmoothingConstant = 0;  
+var trendValue = 0;
+
+function holtsMethodSmoothing(currentValue){
+  if (previousValue == null) {
+    previousValue = currentValue;
+    return currentValue;
+  }
+
+  var newValue = levelSmoothingConstant * currentValue + 
+      (1 - levelSmoothingConstant)*(previousValue + trendValue);
+
+  trendValue = trendSmoothingConstant*(newValue - previousValue) + 
+       (1 - trendSmoothingConstant)*trendValue;
+
+  previousValue = newValue;
+
+  return newValue;
 }

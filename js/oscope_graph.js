@@ -1,10 +1,11 @@
-function Graph(){
+function OScopeGraph(){
   var ctx;
 
   this.setup = function setup ( container ) {
     var canvas = document.createElement( 'canvas' );
     canvas.width = 512; 
-    canvas.height = 256; 
+    canvas.height = 256;
+    canvas.className = 'oscope'; 
     ctx = canvas.getContext( '2d' );
 
     if (container)

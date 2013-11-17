@@ -1,7 +1,6 @@
 var audioContext = null;
 var graph;
 var analyser;
-var analyser2;
 var data = new Uint8Array(512);
 var freqs = new Float32Array(64);
 var freqBytes = new Uint8Array(64);
@@ -40,9 +39,6 @@ function gotStream(stream) {
   analyser.fftSize = 1024;
   input.connect(analyser);
 
-  analyser2 = audioContext.createAnalyser();
-  analyser2.fftSize = 128;
-  analyser.connect(analyser2);
   // startup the main loop
   update();
 
